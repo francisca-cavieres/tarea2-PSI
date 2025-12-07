@@ -4,10 +4,11 @@ x2 = audioread("~/Desktop/Universidad/Tercer año/Segundo Semestre/PSI/tarea2-PS
 M = length(x1) + length(x2);
 d = 10;
 L = d*M;
-c = 340;
+
 
 X1 = fft(x1, L);
 X2 = fft(x2, L);
+
 
 num = X1 .* conj(X2);
 den = abs(X1) .* abs(X2);
@@ -15,25 +16,21 @@ arg = num ./ den;
 
 R12 = ifft(arg);
 
+% Revisar dimensiones
 shift = floor(L/2);
 
-part1 = R12(L-shift+1 : L);
-part2 = R12(1 : shift);
+part1 = R12(L-shift+1 : L);   
+part2 = R12(1 : shift);       
 
-R_combined = [part1 ; part2];
-R_combined = R_combined(:);      % <--- IMPORTANT FIX
+R_combined = [part1 ; part2];   
 
 [~, D] = max(abs(R_combined));
 
-tau = (D - shift)/(d*Fs);         % <--- FIXED PARENTHESIS
-tm = 0.5 /( c );
-theta = asin(tau/tm);
-% Calculate the angle in degrees
-theta_degrees = rad2deg(theta);
-% Display the calculated angle in degrees
-disp(['Calculated angle (degrees): ', num2str(theta_degrees)]);
 
-  
+tau = (D - shift)./d*Fs;
+tm = d / (c*Fs);
+theta = asin(tau/)
+
 
 
 
