@@ -1,40 +1,62 @@
 [x1,Fs] = audioread("~/Desktop/Universidad/Tercer año/Segundo Semestre/PSI/tarea2-PSI/signal/signal-10.wav");
-x2 = audioread("~/Desktop/Universidad/Tercer año/Segundo Semestre/PSI/tarea2-PSI/signal/signal-20.wav");
+x2 = audioread("~/Desktop/Universidad/Tercer año/Segundo Semestre/PSI/tarea2-PSI/signal/signal10.wav");
+x_x1 = -0.25;
+x_x2 = 0.25;
 
+dist = abs(x_x2) + abs(x_x1)
 M = length(x1) + length(x2);
 d = 10;
 L = d*M;
 c = 340;
 
-X1 = fft(x1, L);
-X2 = fft(x2, L);
+X1 = fft(x1, M);
+X2 = fft(x2, M);
 
-num = X1 .* conj(X2);
-den = abs(X1) .* abs(X2);
+X_2 = conj(X2);
+num = X1 .* X_2;
+den = abs(num);
 arg = num ./ den;
 
-R12 = ifft(arg);
+R12 = ifft(arg,L);
 
 shift = floor(L/2);
 
-part1 = R12(L-shift+1 : L);
-part2 = R12(1 : shift);
-
+part1 = R12(L-shift : L);
+part2 = R12(1 : shift+1);
+part1 = part1(:);
+part2 = part2(:);
 R_combined = [part1 ; part2];
-R_combined = R_combined(:);      % <--- IMPORTANT FIX
+    
 
 [~, D] = max(abs(R_combined));
 
-tau = (D - shift)/(d*Fs);         % <--- FIXED PARENTHESIS
-tm = 0.5 /( c );
-theta = asin(tau/tm);
-% Calculate the angle in degrees
-theta_degrees = rad2deg(theta);
-% Display the calculated angle in degrees
-disp(['Calculated angle (degrees): ', num2str(theta_degrees)]);
-
-  
+tau = (D - shift)/(d*Fs);        
+tm = dist / c ;
+res = tau/tm
+disp(num2str(res));
+theta = asind(res);
 
 
 
-    
+disp(['Calculated angle (degrees): ', num2str(theta)]);
+
+microphone = phased.OmnidirectionalMicrophoneElement('FrequencyRange', [20 Fs/2]);
+array = phased.ULA(2, 0.5, 'Element', microphone);
+gcc = phased.GCCEstimator('SensorArray', array, 'PropagationSpeed', c,'SampleRate',Fs);
+
+signal_matrix = [x1(:) x2(:)];
+
+% Time Delay Estimate τ (seconds)
+tau_2 = gcc(signal_matrix);
+
+disp("Estimated delay tau = " + tau_2 + " seconds");
+
+if(tau ~= tau_2)
+    disp('Delay estimates do not match. Further analysis required.');
+    % Additional processing or error handling can be added here
+else
+    % Further analysis or processing can be added here
+    % For example, calculating the difference in delay estimates
+    delayDifference = abs(tau - tau_2);
+    disp(['Difference in delay estimates: ', num2str(delayDifference), ' seconds']);
+end
