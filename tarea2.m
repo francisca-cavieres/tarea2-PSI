@@ -1,5 +1,5 @@
-[x1,Fs] = audioread("~/Desktop/Universidad/Tercer año/Segundo Semestre/PSI/tarea2-PSI/signal/signal-10.wav");
-x2 = audioread("~/Desktop/Universidad/Tercer año/Segundo Semestre/PSI/tarea2-PSI/signal/signal10.wav");
+[x1,Fs] = audioread("~/Desktop/Universidad/Tercer año/Segundo Semestre/PSI/tarea2-PSI/signal/signal90.wav");
+x2 = x1;
 x_x1 = -0.25;
 x_x2 = 0.25;
 
@@ -14,7 +14,9 @@ X2 = fft(x2, M);
 
 X_2 = conj(X2);
 num = X1 .* X_2;
-den = abs(num);
+X1_abs = abs(X1);
+X2_abs = abs(X2);
+den = X1_abs .* X2_abs;
 arg = num ./ den;
 
 R12 = ifft(arg,L);
@@ -32,13 +34,9 @@ R_combined = [part1 ; part2];
 
 tau = (D - shift)/(d*Fs);        
 tm = dist / c ;
-res = tau/tm
-disp(num2str(res));
+res = tau/tm;
 theta = asind(res);
 
-
-
-disp(['Calculated angle (degrees): ', num2str(theta)]);
 
 microphone = phased.OmnidirectionalMicrophoneElement('FrequencyRange', [20 Fs/2]);
 array = phased.ULA(2, 0.5, 'Element', microphone);
@@ -46,17 +44,10 @@ gcc = phased.GCCEstimator('SensorArray', array, 'PropagationSpeed', c,'SampleRat
 
 signal_matrix = [x1(:) x2(:)];
 
-% Time Delay Estimate τ (seconds)
 tau_2 = gcc(signal_matrix);
 
-disp("Estimated delay tau = " + tau_2 + " seconds");
 
-if(tau ~= tau_2)
-    disp('Delay estimates do not match. Further analysis required.');
-    % Additional processing or error handling can be added here
-else
-    % Further analysis or processing can be added here
-    % For example, calculating the difference in delay estimates
-    delayDifference = abs(tau - tau_2);
-    disp(['Difference in delay estimates: ', num2str(delayDifference), ' seconds']);
-end
+
+
+
+
