@@ -52,11 +52,9 @@ ratio = tau / tm;
 
 % Finalmente, se obtiene theta
 theta = asind(ratio);
-disp("======== GCC - PHAT manual ========");
-disp("Theta = " + num2str(theta) + "°");
-disp("===================================")
 
-% Luego, se genera la versión de matlab
+disp("Theta = " + num2str(theta) + " degrees");
+
 microphone = phased.OmnidirectionalMicrophoneElement('FrequencyRange', [20 Fs/2]);
 array = phased.ULA(2, 0.5, 'Element', microphone);
 gcc = phased.GCCEstimator('SensorArray', array, 'PropagationSpeed', c,'SampleRate',Fs);
@@ -64,7 +62,11 @@ gcc = phased.GCCEstimator('SensorArray', array, 'PropagationSpeed', c,'SampleRat
 signal_matrix = [x1(:) x2(:)];
 
 tau_2 = gcc(signal_matrix);
-disp("======== MATLAB GCC - PHAT ==========");
-disp("Theta = "+ num2str(tau_2) + "°");
-disp("======================================")
+
+disp("Hola 2: "+ num2str(tau_2));
+
+
+
+
+
 
