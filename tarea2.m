@@ -1,9 +1,9 @@
-[x1,Fs] = audioread("~/Desktop/Universidad/Tercer año/Segundo Semestre/PSI/tarea2-PSI/signal/signal90.wav");
+[x1,Fs] = audioread("~/Desktop/Universidad/Tercer año/Segundo Semestre/PSI/tarea2-PSI/signal/signal10.wav");
 x2 = x1;
 x_x1 = -0.25;
 x_x2 = 0.25;
 
-dist = abs(x_x2) + abs(x_x1)
+dist = abs(x_x2) + abs(x_x1);
 M = length(x1) + length(x2);
 d = 10;
 L = d*M;
@@ -15,7 +15,7 @@ X2 = fft(x2, M);
 X_2 = conj(X2);
 num = X1 .* X_2;
 X1_abs = abs(X1);
-X2_abs = abs(X2);
+X2_abs = abs(X_2);
 den = X1_abs .* X2_abs;
 arg = num ./ den;
 
@@ -37,7 +37,7 @@ tm = dist / c ;
 res = tau/tm;
 theta = asind(res);
 
-
+disp("Hola "+num2str(theta));
 microphone = phased.OmnidirectionalMicrophoneElement('FrequencyRange', [20 Fs/2]);
 array = phased.ULA(2, 0.5, 'Element', microphone);
 gcc = phased.GCCEstimator('SensorArray', array, 'PropagationSpeed', c,'SampleRate',Fs);
